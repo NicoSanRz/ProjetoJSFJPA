@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Menu</title>
+    </h:head>
+    <h:body>
+        <h:form id="menuForm">
+            Bem-Vindo(a) #{sessionScope.pessoaLogada.nome}
+            <p:menu>
+                <p:submenu label="Manutenção">
+                    <p:menuitem value="Manutenção de Carro" outcome="/admin/carro-crud" icon="ui-icon-car"/>
+                    <p:menuitem value="Usuários do Sistema" outcome="/admin/pessoa-crud" icon="ui-icon-user"/>
+              </p:submenu>
+            </p:menu>
+            <p:commandButton id="btnSair" value="logout" ajax="false" action="#{pessoaController.logout()}"/>
+        </h:form>
+    </h:body>
+    
+</html>

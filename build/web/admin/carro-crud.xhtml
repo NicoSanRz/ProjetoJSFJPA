@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <h:form id="frmCarroList">
+            <p:growl id="growl"/>
+
+            <h:panelGrid id='pn1Button' columns="4">
+                <p:commandButton id="createButton" icon="ui-icon-plus"
+                                 update="growl, :frmCarroCreate, pn1Button"
+                                 oncomplete="PF('carroCreateDialog').show()" value = "Criar"
+                                 actionListener="#{carroController.prepareCreate()}" />
+                
+                <p:commandButton id="viewButton" icon="ui-icon-search"
+                                 update="growl, :frmCarroView, pn1Button"
+                                 oncomplete="PF('carroViewDialog').show()" value = "Visualizar"
+                                 disabled="#{empty carroController.selected}"/>
+                
+                <p:commandButton id="editButton" icon="ui-icon-pencil"
+                                 update="growl, :frmCarroEdit, pn1Button"
+                                 oncomplete="PF('carroEditDialog').show()" value = "Editar"
+                                 disabled="#{empty carroController.selected}"/>
+                
+                <p:commandButton id="deleteButton" icon="ui-icon-trash" value="Excluir"
+                                 actionListener="#{carroController.delete()}"
+                                 update="growl, dt1Carro, pn1Button"
+                                 disabled="#{empty carroController.selected}">
+                    <p:confirm header="Excluir" message="Confirma Exclusão?" icon="ui-icon-alert" />
+                </p:commandButton>
+                
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+            </h:panelGrid>
+            <hr/>
+            <p:dataTable id="dt1Carro" var="item" value="#{carroController.listAll()}"
+                         selectionMode ="single"
+                         selection ="#{carroController.selected}"
+                         paginator ="true"
+                         rowKey="#{item.id}"
+                         rows="5"
+                         rowsPerPageTemplate="5,10,20,30"
+                         emptyMessage="Nenhum Registro Localizado">
+                
+                <p:ajax event="rowSelect" update=":frmCarroList:pn1Button" />
+                <p:ajax event="rowUnselect" update=":frmCarroList:pn1Button" />
+                
+                <f:facet name="header">
+                    LISTA DE CARROS CADASTRADOS
+                </f:facet>
+
+                <p:column headerText="Id">
+                    <h:outputText value="#{item.id}" />
+                </p:column>
+
+                <p:column headerText="Marca">
+                    <h:outputText value="#{item.marca}" />
+                </p:column>
+
+                <p:column headerText=" Modelo">
+                    <h:outputText value="#{item.modelo}" />
+                </p:column>
+
+            </p:dataTable>
+        </h:form>
+
+        <p:dialog header="Novo Carro" widgetVar="carroCreateDialog" modal="true" 
+                  showEffect="fade" hideEffect="fade" resizable="false" appendTo="@(body)">
+            <h:form id="frmCarroCreate">
+                <p:outputPanel id="carroCreate" >
+                    <h:panelGrid columns="2">
+                        <p:outputLabel value="Marca: " for="marca" />
+                        <p:inputText id="marca" value="#{carroController.selected.marca}" required="true" requiredMessage="Marca é obrigatória!"/> 
+
+                        <p:outputLabel value="Modelo: " for="modelo" />
+                        <p:inputText id="modelo" value="#{carroController.selected.modelo}" required="true" requiredMessage="Modelo é obrigatório!"/>
+
+                        <p:commandButton value="Salvar" action="#{carroController.create()}" update=":frmCarroList, :frmCarroCreate" 
+                                         onclick="carroCreateDialog.hide()" oncomplete="handleSubmit(args,'carroCreateDialog');" />
+                    </h:panelGrid>
+                </p:outputPanel>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Visualizar Carro" widgetVar="carroViewDialog" modal="true" 
+                  showEffect="fade" hideEffect="fade" resizable="false" appendTo="@(body)">
+            <h:form id="frmCarroView">
+                <p:outputPanel id="carroView" >
+                    <h:panelGrid columns="2">
+                        <p:outputLabel value="Marca: " for="marca" />
+                        <h:outputText id="marca" value="#{carroController.selected.marca}" /> 
+
+                        <p:outputLabel value="Modelo: " for="modelo" />
+                        <h:outputText id="modelo" value="#{carroController.selected.modelo}" />                    
+                    </h:panelGrid>
+                </p:outputPanel>
+            </h:form>
+        </p:dialog>
+        
+        
+        <p:dialog header="Editar Carro" widgetVar="carroEditDialog" modal="true" 
+                  showEffect="fade" hideEffect="fade" resizable="false" appendTo="@(body)">
+            <h:form id="frmCarroEdit">
+                <p:outputPanel id="carroEdit" >
+                    <h:panelGrid columns="2">
+                        <p:outputLabel value="Marca: " for="marca" />
+                        <p:inputText id="marca" value="#{carroController.selected.marca}" required ="true" /> 
+
+                        <p:outputLabel value="Modelo: " for="modelo" />
+                        <p:inputText id="modelo" value="#{carroController.selected.modelo}" required="true" />  
+                        
+                        <p:commandButton value="Salvar" action="#{carroController.create()}" update=":frmCarroList, :frmCarroEdit"
+                                         onclick="carroEditDialog.hide()" oncomplete="handleSubmit(args,'carroEditDialog')" />
+                    </h:panelGrid>
+                </p:outputPanel>
+            </h:form>
+        </p:dialog>
+
+    </h:body>
+</html>
+
